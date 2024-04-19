@@ -17,7 +17,7 @@ All of the code and packages necessary to implement FairVIC are contained within
 
 ### Files
 This repository contains the following files:
-* `src/` - A detailed Jupyter Notebook that will guide readers through using FairVIC.
+* `src/`
   * `encoder_shield\adpt\shield.py` - The main source code behind our method. This includes the adaptive shield extension.
   * `buffer.py` - Source code for a replay buffer.
   * `noise.py` - Source code for the Ornstein-Uhlenbeck noise.
