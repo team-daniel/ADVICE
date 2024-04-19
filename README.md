@@ -18,6 +18,7 @@ To get started you can run the `main.py` file from our source code. To run ADVIC
 ```
 pip install safety-gymnasium
 ```
+You can refer to the [safety gymnasium](https://github.com/PKU-Alignment/safety-gymnasium) repo for more details on installation, usage, and customisation.
 
 ### Files
 This repository contains the following files:
