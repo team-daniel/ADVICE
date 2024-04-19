@@ -18,19 +18,24 @@ from buffer import Buffer
 
 class Encoder_DDPG_Adpt_Shield():
     def __init__(self, env, total_episodes, state_size, action_size, action_high, action_low):
+        # total episodes
         self.total_episodes = total_episodes
         
+        # environment
         self.env = env
         
+        # rl params
         self.gamma = 0.95
         self.tau = 0.005
         
+        # environment params
         self.state_size = state_size
         self.action_size = action_size
         self.action_high = action_high
         self.action_low = action_low
         self.action_range = action_high - action_low
         
+        # initialise actor and critic
         self.actor_lr = 0.002
         self.actor = self.get_actor()
         self.target_actor = self.get_actor()
@@ -43,11 +48,13 @@ class Encoder_DDPG_Adpt_Shield():
         self.target_critic.set_weights(self.critic.get_weights())
         self.critic_optimizer = tf.keras.optimizers.Adam(self.critic_lr)
         
+        # initialise noise and buffer objects
         self.noise_object = OUActionNoise(mean=np.zeros(1), std_deviation=float(0.2) * np.ones(1))
         
         self.buffer = Buffer(self.state_size, self.action_size, 250_000, 64, self.actor, self.target_actor, 
                              self.critic, self.target_critic, self.actor_optimizer, self.critic_optimizer, self.gamma)
         
+        # initialise the autoencoder model
         self.base_encoder = self.get_encoder()
         self.base_decoder = self.get_decoder()
         
@@ -59,8 +66,10 @@ class Encoder_DDPG_Adpt_Shield():
             optimizer=self.autoencoder_optimizer
         )
         
+        # intial value of k
         self.neighbours_count = 3
         
+    # create the actor model
     def get_actor(self):
         last_init = tf.random_uniform_initializer(minval=-0.003, maxval=0.003)
 
@@ -73,6 +82,7 @@ class Encoder_DDPG_Adpt_Shield():
         model = tf.keras.Model(inputs, outputs)
         return model
     
+    # create the critic model
     def get_critic(self):
         state_input = layers.Input(shape=(self.state_size))
         state_out = layers.Dense(16, activation="relu")(state_input)
@@ -93,6 +103,7 @@ class Encoder_DDPG_Adpt_Shield():
         model = tf.keras.Model([state_input, action_input], outputs) 
         return model
 
+    # serive the policy's action from a given state and add appropriate noise
     def policy(self, state):
         sampled_actions = tf.squeeze(self.actor(state))
         noise = self.noise_object()     
@@ -106,16 +117,19 @@ class Encoder_DDPG_Adpt_Shield():
         for a, b in zip(target_weights, weights):
             a.assign(b * self.tau + a * (1 - self.tau)) 
             
+    # calculate euclian distance between two vectors.
     def euclidean_distance(self, vects):
         x, y = vects
         sum_square = tf.math.reduce_sum(tf.math.square(x - y), axis=1, keepdims=True)
         return tf.math.sqrt(tf.math.maximum(sum_square, tf.keras.backend.epsilon()))
 
+    # calculate the contrastive loss function according to Equation 1.
     def contrastive_loss(self, y_true, y_pred, margin=1.0):
         square_pred = tf.square(y_pred)
         margin_square = tf.square(tf.maximum(margin - y_pred, 0))
         return tf.reduce_mean(y_true * square_pred + (1 - y_true) * margin_square)
 
+    # create the encoder model
     def get_encoder(self):
         inputs = layers.Input(shape=(34,))
 
@@ -128,6 +142,7 @@ class Encoder_DDPG_Adpt_Shield():
         model = tf.keras.Model(inputs, latent, name='encoder')
         return model
     
+    # create the decoder model
     def get_decoder(self):
         inputs = layers.Input(shape=(2))
         x = layers.Dense(512, kernel_initializer='he_normal', kernel_regularizer=regularizers.l2(1e-3))(inputs)
@@ -138,6 +153,7 @@ class Encoder_DDPG_Adpt_Shield():
         model = tf.keras.Model(inputs, latent, name='decoder')
         return model
     
+    # create the siamese autoencoder model for training
     def get_contrastive_autoencoder(self):
         input_a = layers.Input(shape=(34,))
         input_b = layers.Input(shape=(34,))
@@ -151,6 +167,7 @@ class Encoder_DDPG_Adpt_Shield():
         model = tf.keras.Model([input_a, input_b], outputs=[decoded_a, decoded_b, merge_layer], name='autoencoder')
         return model
     
+    # generate pairs of data from the data collected in intial training
     def make_pairs(self, x_train, y_train):
         safe_idxs = [i for i, label in enumerate(y_train) if label == 1]
         unsafe_idxs = [i for i, label in enumerate(y_train) if label == 0]
@@ -178,11 +195,8 @@ class Encoder_DDPG_Adpt_Shield():
         
         return np.array(pairs), np.array(labels).astype("float32")
     
+    # train the autoencoder
     def train_autoencoder(self):
-        # truncate safe_obs to match unsafe_obs
-        len_unsafe = len(self.unsafe_observations) + 1
-        self.safe_observations = self.safe_observations[:len_unsafe]
-        
         safe_obs = self.safe_observations
         unsafe_obs = self.unsafe_observations
         
@@ -225,17 +239,7 @@ class Encoder_DDPG_Adpt_Shield():
             verbose=2
         )
         
-        plt.figure(figsize=(10, 7))
-        plt.plot(history.history['loss'], label='Training loss')
-        plt.plot(history.history['val_loss'], label='Validation loss')
-        plt.title('Model Loss Over Epochs')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.legend()
-        plt.ylim([0, 2])
-        plt.savefig("loss.png")
-        plt.show()
-        
+    # get data for fitting the neighbours model
     def get_testable_data(self):
         safe_obs = self.safe_observations
         unsafe_obs = self.unsafe_observations
@@ -258,6 +262,7 @@ class Encoder_DDPG_Adpt_Shield():
         
         return x, y
 
+    # test the autoencoder, this works if you have some test data from a seperate run but doesn't affect the model. (Just a sanity check)
     def test_autoencoder(self, x, y, episode):
         embeddings = self.base_encoder.predict(x)
         
@@ -343,6 +348,7 @@ class Encoder_DDPG_Adpt_Shield():
         plt.savefig("conf_matrix.png")
         plt.show()
         
+    # the adaptive nearest neighbours module
     def update_neighbors(self, recent_episodes=10, current_window=2):
         # Calculate the differences between consecutive entries (the incremental violations per episode)
         recent_differences = [self.metrics['safety_violations'][i] - self.metrics['safety_violations'][i - 1] for i in range(-recent_episodes, 0)]
@@ -359,6 +365,7 @@ class Encoder_DDPG_Adpt_Shield():
         elif current_rate < moving_average and self.neighbours_count > 3:
             self.neighbours_count -= 1
         
+    # the ADVICE shield
     def shield(self, current_state, original_action, step_size=1.0):
         # Process a batch of states and actions to generate embeddings more efficiently
         def get_embeddings(states, actions):
@@ -412,6 +419,7 @@ class Encoder_DDPG_Adpt_Shield():
             # If no safe actions were found, return the fallback action
             return -original_action
             
+    # the RL loop
     def train(self, encoder_train_every):
         print("Beginning Training (Adaptive Encoder shield)...")
         print("===================================================")
