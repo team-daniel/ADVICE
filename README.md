@@ -1,15 +1,15 @@
-# FairVIC
+# ADVICE: Adaptive Shielding with a Contrastive Autoencoder
 This repository contains code from my paper on Robust Uncertainty Quantification using Conformalised Monte Carlo Prediction.
 
 ### Introduction
 yap yap yap
 
 <p align="center">
-  <img src="fairVIC.png" alt="High-level Overview of FairVIC" width="400"/>
+  <img src="overview.png" alt="High-level Overview of ADVICE" width="800"/>
 </p>
-<p align="center">Fig 1. A high-level overview of the FairVIC loss function in a neural network training loop.</p>
+<p align="center">Fig 1. A high-level overview of ADVICE including training, inference, and the adaptive extension.</p>
 
-### FairVIC
+### ADVICE
 yap yap yap
 
 ### Getting Started
@@ -17,8 +17,12 @@ All of the code and packages necessary to implement FairVIC are contained within
 
 ### Files
 This repository contains the following files:
-* `ECAISupplementaryCode.ipynb` - A detailed Jupyter Notebook that will guide readers through using FairVIC.
-* `fairVIC.png` - A high-level overview image of how FairVIC is incorporated within the training of a neural network.
+* `src/` - A detailed Jupyter Notebook that will guide readers through using FairVIC.
+  * `encoder_shield\adpt\shield.py` - The main source code behind our method. This includes the adaptive shield extension.
+  * `buffer.py` - Source code for a replay buffer.
+  * `noise.py` - Source code for the Ornstein-Uhlenbeck noise.
+  * `main.py` - Source code for running the source code and saving results/models.
+* `overview.png` - A high-level overview of ADVICE including training, inference, and the adaptive extension.
 
 ### Datasets
 yap yap yap
