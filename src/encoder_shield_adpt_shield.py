@@ -360,9 +360,9 @@ class Encoder_DDPG_Adpt_Shield():
         current_rate = sum(current_rate_window) / current_window
 
         # Adjust neighbours_count accordingly
-        if current_rate > moving_average + moving_std_dev and self.neighbours_count < 5:
+        if current_rate >= moving_average + moving_std_dev and self.neighbours_count < 5:
             self.neighbours_count += 1
-        elif current_rate < moving_average and self.neighbours_count > 3:
+        elif current_rate <= moving_average - moving_std_dev and self.neighbours_count > 3:
             self.neighbours_count -= 1
         
     # the ADVICE shield
