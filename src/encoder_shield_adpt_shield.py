@@ -417,7 +417,7 @@ class Encoder_DDPG_Adpt_Shield():
             return safe_actions[max_index]
         else:
             # If no safe actions were found, return the fallback action
-            return -original_action
+            return original_action
             
     # the RL loop
     def train(self, encoder_train_every):
