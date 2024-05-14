@@ -2,7 +2,7 @@
 This repository contains code from our paper - 'Safe Exploration using Adaptive Shielding'.
 
 ### Introduction
-Safe exploration of reinforcement learning (RL) agents during training is a critical concern, especially on the path to enabling RL agents in many real-world scenarios. Training RL agents in unknown, black-box environments poses an even greater safety risk when prior knowledge of the domain/task is unavailable. We introduce ADVICE (Adaptive Shielding with a Contrastive Autoencoder), a novel post-shielding technique that is able to distinguish safe and unsafe observations during training, thus protecting the RL agent from potentially hazardous exploration. Our experimental evaluation demonstrates how ADVICE can significantly reduce safety violations during training while maintaining a competitive episodic return.
+Empowering safe exploration of reinforcement learning (RL) agents during training is a critical impediment towards deploying RL agents in many real-world scenarios. Training RL agents in unknown, \textit{black-box} environments poses an even greater safety risk when prior knowledge of the domain/task is unavailable. We introduce ADVICE (Adaptive Shielding with a Contrastive Autoencoder), a novel post-shielding technique that distinguishes safe and unsafe features of state-action pairs during training, thus protecting the RL agent from executing actions that yield potentially hazardous outcomes. Our comprehensive experimental evaluation against state-of-the-art safe exploration techniques demonstrates how ADVICE can significantly reduce safety violations during training while maintaining a competitive outcome reward.
 
 <p align="center">
   <img src="overview.png" alt="High-level Overview of ADVICE" width="800"/>
