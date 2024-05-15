@@ -12,6 +12,7 @@ from sklearn.metrics import confusion_matrix
 from statistics import mode
 import seaborn as sns
 from tqdm import tqdm
+from itertools import product
 
 from noise import OUActionNoise
 from buffer import Buffer
@@ -389,9 +390,9 @@ class Encoder_DDPG_Adpt_Shield():
 
         # Generate possible actions on the fly, without storing them all in memory
         def generate_possible_actions(step_size):
-            for x in np.arange(-1, 1 + step_size, step_size):
-                for y in np.arange(-1, 1 + step_size, step_size):
-                    yield np.array([x, y])
+            ranges = [np.arange(low, high + step_size, step_size) for low, high in zip(self.action_low, self.action_high)]
+            for action in product(*ranges):
+                yield np.array(action)
 
         # Check if the original action is safe
         original_embedding = get_embeddings(np.array([current_state]), np.array([original_action]))
