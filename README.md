@@ -16,18 +16,6 @@ Once trained, ADVICE operates by passing the current state and the desired actio
  
 Adaptive ADVICE automatically adjusts the conservativeness of the safety threshold dynamically, based on the agent's recent performance. If the agent has been performing safely, the system can allow more exploratory actions; conversely, if safety violations increase, the system becomes more conservative.
 
-<div style="text-align: center;" align="center">
-  <figure style="display: inline-block; margin: 10px; text-align: center;">
-      <img src="img/semidyn_unsafe.gif" alt="Image 1" style="width: 200px; height: auto;">
-  </figure>
-  <figure style="display: inline-block; margin: 10px; text-align: center;">
-      <img src="img/semidyn_lag.gif" alt="Image 2" style="width: 200px; height: auto;">
-  </figure>
-  <figure style="display: inline-block; margin: 10px; text-align: center;">
-      <img src="img/semidyn_enc.gif" alt="Image 3" style="width: 200px; height: auto;">
-  </figure>
-</div>
-
 ### Getting Started
 To get started you can run the `main.py` file from our source code. To run ADVICE in the [safety gymnasium](https://github.com/PKU-Alignment/safety-gymnasium) test suite, it is required you run the following pip command:
 
