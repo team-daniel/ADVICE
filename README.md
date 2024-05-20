@@ -7,7 +7,7 @@ Empowering safe exploration of reinforcement learning (RL) agents during trainin
 <p align="center">
   <img src="img/overview.png" alt="High-level Overview of ADVICE" width="800"/>
 </p>
-<p align="center">Fig 1. A high-level overview of ADVICE including training, inference, and Adaptive ADVICE.</p>
+<p align="center">Fig 1. A high-level overview of ADVICE including construction, execution, and adaptation.</p>
 
 ### ADVICE
 ADVICE starts with collecting a dataset of state-action pairs, classified as either safe or unsafe based on the outcomes they lead to within the training environment. This dataset is then used to train the contrastive autoencoder. The training process leverages a unique loss function that helps the model learn by comparing similar (safe) and dissimilar (unsafe) pairs, enhancing its ability to identify and categorize new observations quickly. To classify unseen data, a nearest neighbours model is fit on the final embedding space.
