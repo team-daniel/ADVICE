@@ -17,11 +17,33 @@ Once trained, ADVICE operates by passing the current state and the desired actio
 Adaptive ADVICE automatically adjusts the conservativeness of the safety threshold dynamically, based on the agent's recent performance. If the agent has been performing safely, the system can allow more exploratory actions; conversely, if safety violations increase, the system becomes more conservative.
 
 ### Getting Started
-To get started you can run the `main.py` file from our source code. To run ADVICE in the [safety gymnasium](https://github.com/PKU-Alignment/safety-gymnasium) test suite, it is required you run the following pip command:
+To get started you can run the `main.py` file from our source code. To run ADVICE in the [safety gymnasium](https://github.com/PKU-Alignment/safety-gymnasium) test suite, it is required you run the following pip commands:
 
 ```
-pip install safety-gymnasium
+wget https://github.com/PKU-Alignment/safety-gymnasium/archive/refs/heads/main.zip
+unzip main.zip
+cd safety-gymnasium-main
+pip install -e .
 ```
+
+to locally download the test suite. The following libraries and packages are required:
+
+```
+numpy==1.23.4
+tensorflow==2.4.1
+pandas==2.0.3
+plotly==5.18.0
+seaborn==0.13.0
+scikit-learn==1.2.1
+tqdm==4.66.1
+```
+
+To then run ADVICE, you can run the `main.py` file using the following command:
+
+```
+python main.py
+```
+
 You can refer to the [safety gymnasium](https://github.com/PKU-Alignment/safety-gymnasium) repo for more details on installation, usage, and customisation.
 
 ### Files
